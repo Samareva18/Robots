@@ -78,6 +78,7 @@ public class GameVisualizer extends JPanel
     {
         double diffX = x1 - x2;
         double diffY = y1 - y2;
+        //
         return Math.sqrt(diffX * diffX + diffY * diffY);
     }
     
