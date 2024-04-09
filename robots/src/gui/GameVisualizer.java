@@ -67,6 +67,7 @@ public class GameVisualizer extends JPanel
     {
         m_targetPositionX = p.x;
         m_targetPositionY = p.y;
+        //m_targetPositionY = p.y;
     }
     
     protected void onRedrawEvent()
