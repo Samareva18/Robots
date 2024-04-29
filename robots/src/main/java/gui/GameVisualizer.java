@@ -1,10 +1,6 @@
 package main.java.gui;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
@@ -14,6 +10,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JPanel;
+
+import main.java.gui.Maze;
 
 public class GameVisualizer extends JPanel {
 
@@ -68,13 +66,17 @@ public class GameVisualizer extends JPanel {
     private volatile double m_robotPositionY = 100;
     private volatile double m_robotDirection = 0;
 
-//    private volatile int m_targetPositionX = 150;
-//    private volatile int m_targetPositionY = 100;
-//
-//    private static final double maxVelocity = 0.1;
-//    private static final double maxAngularVelocity = 0.001;
+    int robotSize = 30;
+    int halfRobotSize = robotSize / 2;
+//    private Maze maze;
+
+    private float windowHeight = getHeight();
+    private float windowWidth = getWidth();
+
 
     public GameVisualizer() {
+//        maze = new Maze(windowHeight, windowWidth);
+//        add(maze);
         m_timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -128,16 +130,12 @@ public class GameVisualizer extends JPanel {
             @Override
             public void keyTyped(KeyEvent e) {
             }
+
         });
 
         setDoubleBuffered(true); // для более плавного отображения графики
         setFocusable(true);
     }
-
-//    protected void setTargetPosition(Point p) {
-//        m_targetPositionX = p.x;
-//        m_targetPositionY = p.y;
-//    }
 
     protected void onRedrawEvent() {
         EventQueue.invokeLater(this::repaint);
@@ -149,12 +147,6 @@ public class GameVisualizer extends JPanel {
         return Math.sqrt(diffX * diffX + diffY * diffY);
     }
 
-//    private static double angleTo(double fromX, double fromY, double toX, double toY) {
-//        double diffX = toX - fromX;
-//        double diffY = toY - fromY;
-//
-//        return asNormalizedRadians(Math.atan2(diffY, diffX));
-//    }
 
     //метод обеспечивает движение робота к целевой позиции
     //с учетом его текущего положения, скорости и направления
@@ -214,15 +206,6 @@ public class GameVisualizer extends JPanel {
     }
 
 
-//    private static double asNormalizedRadians(double angle) {
-//        while (angle < 0) {
-//            angle += 2 * Math.PI;
-//        }
-//        while (angle >= 2 * Math.PI) {
-//            angle -= 2 * Math.PI;
-//        }
-//        return angle;
-//    }
 
     private static int round(double value) {
         return (int) (value + 0.5);
@@ -233,7 +216,7 @@ public class GameVisualizer extends JPanel {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         drawRobotInBounds(g2d, m_robotDirection);
-//        drawTarget(g2d, m_targetPositionX, m_targetPositionY);
+        drawRobotWithinPath(g2d, m_robotDirection);
     }
 
     private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2) {
@@ -286,6 +269,49 @@ public class GameVisualizer extends JPanel {
             drawRobot(g, direction);
         }
     }
+
+    private void drawRobotWithinPath(Graphics2D g, double direction){
+
+        int robotCenterX = round(m_robotPositionX);
+        int robotCenterY = round(m_robotPositionY);
+
+        int countOfCellsInWidth = maze[0].length;
+        int countOfCellsInHeight = maze.length;
+
+        float windowHeight = getHeight();
+        float windowWidth = getWidth();
+
+        int cellWidth = round(windowWidth / countOfCellsInWidth);
+        int cellHeight = round(windowHeight / countOfCellsInHeight);
+
+        int i1 = robotCenterY  / cellHeight;
+        int j1 = (robotCenterX + halfRobotSize)/ cellWidth;
+
+        int i2 = robotCenterY  / cellHeight;
+        int j2 = (robotCenterX - halfRobotSize)/ cellWidth;
+
+        int i3 = (robotCenterY - halfRobotSize) / cellHeight;
+        int j3 = robotCenterX / cellWidth;
+
+        int i4 = (robotCenterY + halfRobotSize) / cellHeight;
+        int j4 = robotCenterX / cellWidth;
+
+
+        if (maze[i1][j1] == 1 && direction == 0) { //вправо
+            moveRobot(-5, 0);
+        }
+        if (maze[i2][j2] == 1 && direction == Math.PI) { //влево
+            moveRobot(5, 0);
+        }
+        if (maze[i3][j3] == 1 && direction == -Math.PI/2) { //вверх
+            moveRobot(0, 5);
+        }
+        if (maze[i4][j4] == 1 && direction == Math.PI/2) { //вниз
+            moveRobot(0, -5);
+        }
+
+    }
+
 
 
 //    private void drawTarget(Graphics2D g, int x, int y) {
