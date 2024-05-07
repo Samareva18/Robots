@@ -24,17 +24,17 @@ import static main.java.gui.MazeGenerator.generateMaze;
 public class GameVisualizer extends JPanel {
 
     private int[][] maze = {                          //TODO вынести в отдельный класс + функция для генерации лабиринта
-            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1},
             {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0},
-            {1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1},
+            {1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1},
             {0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1},
             {1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1},
+            {0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1},
             {1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1},
-            {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1},
-            {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1},
+            {1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1},
+            {1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1},
             {0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0},
             {1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1},
             {1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1}
@@ -58,41 +58,75 @@ public class GameVisualizer extends JPanel {
                     g.setColor(Color.PINK);
                     g.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
 
-                    try {
-                        backgroundImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\grass.png"));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (backgroundImage != null) {
-                        g.drawImage(backgroundImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
-                    }
+//                    try {
+//                        backgroundImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\grass.png"));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    if (backgroundImage != null) {
+//                        g.drawImage(backgroundImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
+//                    }
                 } else {
                     g.setColor(Color.YELLOW);
                     g.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
-                    try {
-                        backgroundImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\img.png"));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (backgroundImage != null) {
-                        g.drawImage(backgroundImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
-                    }
+//                    try {
+//                        backgroundImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\img.png"));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    if (backgroundImage != null) {
+//                        g.drawImage(backgroundImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
+//                    }
                 }
-               // g.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
 
-//                try {
-//                    backgroundImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\grass.png"));
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                if (backgroundImage != null) {
-//                    g.drawImage(backgroundImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
-//                }
+                drawCarrot(g);
 
             }
         }
 
     }
+
+
+
+
+    private void drawCarrot(Graphics g){
+        BufferedImage img = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\carrot.png");
+        float windowHeight = getHeight();
+        float windowWidth = getWidth();
+        int countOfCellsInWidth = maze[0].length;
+        int countOfCellsInHeight = maze.length;
+        int cellWidth = round(windowWidth / countOfCellsInWidth);
+        int cellHeight = round(windowHeight / countOfCellsInHeight);
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[i].length; j++) {
+                if (!isPrizeCollected(cellWidth, cellHeight,j * cellWidth + 5, i * cellHeight + 5)) {
+                    if (maze[i][j] == 0 && (i % 7 == 0 || j % 5 == 0 || i % 4 == 0) && (i + j) % 3 == 0) {
+                        g.drawImage(img, j * cellWidth + 5, i * cellHeight + 5, 30, 30, this);
+                    } else {
+
+                    }
+                }else{
+                    maze[i][j] = -1; // приз собран
+                    gameCount++;
+                    drawGameCount(g);
+                }
+            }
+        }
+    }
+
+    private boolean isPrizeCollected(int cellWidth,int cellHeight, int prizeX, int prizeY ){
+        return m_robotPositionX >= prizeX && m_robotPositionX <= prizeX + cellWidth && m_robotPositionY >= prizeY
+                && m_robotPositionY <= prizeY + cellHeight;
+    }
+
+
+    private void drawGameCount(Graphics g){
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.PLAIN, 20));
+        g.drawString("Счет: " + gameCount, 20, 25);
+    }
+
+
 
     private final Timer m_timer = initTimer();
 
@@ -109,13 +143,14 @@ public class GameVisualizer extends JPanel {
     int halfRobotSize = robotSize / 2;
 
     private BufferedImage m_characterImage;
-    private BufferedImage backgroundImage;
+    private  BufferedImage backgroundImage;
+    private int gameCount = 0;
+
 
 
 //    private Maze m_maze;
 
-//    private float windowHeight = getHeight();
-//    private float windowWidth = getWidth();
+
 
 
     public GameVisualizer() {
@@ -185,42 +220,6 @@ public class GameVisualizer extends JPanel {
         EventQueue.invokeLater(this::repaint);
     }
 
-    private static double distance(double x1, double y1, double x2, double y2) {
-        double diffX = x1 - x2;
-        double diffY = y1 - y2;
-        return Math.sqrt(diffX * diffX + diffY * diffY);
-    }
-
-
-    //метод обеспечивает движение робота к целевой позиции
-    //с учетом его текущего положения, скорости и направления
-//    protected void onModelUpdateEvent() {
-//        double distance = distance(m_targetPositionX, m_targetPositionY,
-//                m_robotPositionX, m_robotPositionY);
-//        if (distance < 0.5) {
-//            return;
-//        }
-//        double velocity = maxVelocity;
-//        double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
-//        double angularVelocity = 0;
-//        if (angleToTarget > m_robotDirection) {
-//            angularVelocity = maxAngularVelocity;
-//        }
-//        if (angleToTarget < m_robotDirection) {
-//            angularVelocity = -maxAngularVelocity;
-//        }
-//
-//        //moveRobot(1, 1);
-//    }
-
-    private static double applyLimits(double value, double min, double max) {
-        if (value < min)
-            return min;
-        if (value > max)
-            return max;
-        return value;
-    }
-
 
     private void moveRobot(double dx, double dy) {
         m_robotPositionX += dx;
@@ -240,28 +239,8 @@ public class GameVisualizer extends JPanel {
         drawRobotWithinPath(g2d, m_robotDirection);
     }
 
-    private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2) {
-        g.fillOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
-    }
-
-    private static void drawOval(Graphics g, int centerX, int centerY, int diam1, int diam2) {
-        g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
-    }
 
     private void drawRobot(Graphics2D g, double direction) {
-//        int robotCenterX = round(m_robotPositionX);
-//        int robotCenterY = round(m_robotPositionY);
-//
-//        AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY);
-//        g.setTransform(t);
-//        g.setColor(Color.MAGENTA);
-//        fillOval(g, robotCenterX, robotCenterY, 30, 10);
-//        g.setColor(Color.BLACK);
-//        drawOval(g, robotCenterX, robotCenterY, 30, 10);
-//        g.setColor(Color.WHITE);
-//        fillOval(g, robotCenterX + 10, robotCenterY, 5, 5);
-//        g.setColor(Color.BLACK);
-//        drawOval(g, robotCenterX + 10, robotCenterY, 5, 5);
 
         loadCharacterImage();
         int characterCenterX = round(m_robotPositionX);
@@ -275,20 +254,26 @@ public class GameVisualizer extends JPanel {
                     characterCenterY - m_characterImage.getHeight(null) / 2, null);
 
         }
-//        if (characterImage != null) {
-//            g.drawImage(characterImage, characterCenterX - characterImage.getWidth(null) / 2,
-//                    characterCenterY - characterImage.getHeight(null) / 2, null);
-//
-//        }
     }
 
     private void loadCharacterImage() {
         try {
             m_characterImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\rabbit1.png"));
-           // characterImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\bird.png"));
-        } catch (IOException e) {
+            }
+        catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    private BufferedImage loadImage(String path){
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(new File(path));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
     private void drawRobotInBounds(Graphics2D g, double direction) {
@@ -368,6 +353,8 @@ public class GameVisualizer extends JPanel {
 //        g.setColor(Color.BLACK);
 //        drawOval(g, x, y, 5, 5);
 //    }
+
+
 
     public double getM_robotPositionX() {
         return m_robotPositionX;
