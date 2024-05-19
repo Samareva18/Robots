@@ -54,15 +54,10 @@ public class GameVisualizer extends JPanel {
         int cellWidth = round(windowWidth / countOfCellsInWidth);
         int cellHeight = round(windowHeight / countOfCellsInHeight);
 
-        BufferedImage grassImage = null;
-        BufferedImage imgImage = null;
+        BufferedImage grassImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\grass.png");
+        BufferedImage pathImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\img.png");
+        BufferedImage carrotImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\carrot.png");
 
-        try {
-            grassImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\grass.png"));
-            imgImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\img.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
                 if (maze[i][j] == 1) {
@@ -76,12 +71,12 @@ public class GameVisualizer extends JPanel {
                     g.setColor(Color.YELLOW);
                     g.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
 
-                    if (imgImage != null) {
-                        g.drawImage(imgImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
+                    if (pathImage != null) {
+                        g.drawImage(pathImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
                     }
                 }
 
-                drawCarrot(g);
+                drawCarrot(g, carrotImage);
                 drawFinish(g);
 
             }
@@ -97,8 +92,7 @@ public class GameVisualizer extends JPanel {
     }
 
 
-    private void drawCarrot(Graphics g) {
-        BufferedImage img = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\carrot.png");
+    private void drawCarrot(Graphics g, BufferedImage carrotImage) {
         float windowHeight = getHeight();
         float windowWidth = getWidth();
         int countOfCellsInWidth = maze[0].length;
@@ -109,7 +103,7 @@ public class GameVisualizer extends JPanel {
             for (int j = 0; j < maze[i].length; j++) {
                 if (!isPrizeCollected(cellWidth, cellHeight, j * cellWidth + 5, i * cellHeight + 5)) {
                     if (maze[i][j] == 0 && (i % 7 == 0 || j % 5 == 0 || i % 4 == 0) && (i + j) % 3 == 0) {
-                        g.drawImage(img, j * cellWidth + 5, i * cellHeight + 5, 30, 30, this);
+                        g.drawImage(carrotImage, j * cellWidth + 5, i * cellHeight + 5, 30, 30, this);
                     }
                 } else {
                     maze[i][j] = -1; // приз собран
