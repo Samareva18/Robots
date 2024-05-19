@@ -14,7 +14,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import main.java.gui.MazeGenerator;
 import main.java.gui.Maze;
@@ -42,6 +42,7 @@ public class GameVisualizer extends JPanel {
 
     //private int[][] maze = generateMaze(14, 14);
 
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -52,44 +53,51 @@ public class GameVisualizer extends JPanel {
         int countOfCellsInHeight = maze.length;
         int cellWidth = round(windowWidth / countOfCellsInWidth);
         int cellHeight = round(windowHeight / countOfCellsInHeight);
+
+        BufferedImage grassImage = null;
+        BufferedImage imgImage = null;
+
+        try {
+            grassImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\grass.png"));
+            imgImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\img.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
                 if (maze[i][j] == 1) {
                     g.setColor(Color.PINK);
                     g.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
 
-//                    try {
-//                        backgroundImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\grass.png"));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    if (backgroundImage != null) {
-//                        g.drawImage(backgroundImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
-//                    }
+                    if (grassImage != null) {
+                        g.drawImage(grassImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
+                    }
                 } else {
                     g.setColor(Color.YELLOW);
                     g.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
-//                    try {
-//                        backgroundImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\img.png"));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    if (backgroundImage != null) {
-//                        g.drawImage(backgroundImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
-//                    }
+
+                    if (imgImage != null) {
+                        g.drawImage(imgImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
+                    }
                 }
 
                 drawCarrot(g);
+                drawFinish(g);
 
             }
         }
-
     }
 
 
 
+    //TODO переделать
+    private void drawFinish(Graphics g) {
+        BufferedImage img = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\finish.png");
+        g.drawImage(img, 550, 460, 30, 30, this);
+    }
 
-    private void drawCarrot(Graphics g){
+
+    private void drawCarrot(Graphics g) {
         BufferedImage img = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\carrot.png");
         float windowHeight = getHeight();
         float windowWidth = getWidth();
@@ -99,33 +107,30 @@ public class GameVisualizer extends JPanel {
         int cellHeight = round(windowHeight / countOfCellsInHeight);
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
-                if (!isPrizeCollected(cellWidth, cellHeight,j * cellWidth + 5, i * cellHeight + 5)) {
+                if (!isPrizeCollected(cellWidth, cellHeight, j * cellWidth + 5, i * cellHeight + 5)) {
                     if (maze[i][j] == 0 && (i % 7 == 0 || j % 5 == 0 || i % 4 == 0) && (i + j) % 3 == 0) {
                         g.drawImage(img, j * cellWidth + 5, i * cellHeight + 5, 30, 30, this);
-                    } else {
-
                     }
-                }else{
+                } else {
                     maze[i][j] = -1; // приз собран
-                    gameCount++;
+                    //gameCount++;
                     drawGameCount(g);
                 }
             }
         }
     }
 
-    private boolean isPrizeCollected(int cellWidth,int cellHeight, int prizeX, int prizeY ){
+    private boolean isPrizeCollected(int cellWidth, int cellHeight, int prizeX, int prizeY) {
         return m_robotPositionX >= prizeX && m_robotPositionX <= prizeX + cellWidth && m_robotPositionY >= prizeY
                 && m_robotPositionY <= prizeY + cellHeight;
     }
 
 
-    private void drawGameCount(Graphics g){
+    private void drawGameCount(Graphics g) {
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.PLAIN, 20));
         g.drawString("Счет: " + gameCount, 20, 25);
     }
-
 
 
     private final Timer m_timer = initTimer();
@@ -143,14 +148,11 @@ public class GameVisualizer extends JPanel {
     int halfRobotSize = robotSize / 2;
 
     private BufferedImage m_characterImage;
-    private  BufferedImage backgroundImage;
+    private BufferedImage backgroundImage;
     private int gameCount = 0;
 
 
-
 //    private Maze m_maze;
-
-
 
 
     public GameVisualizer() {
@@ -259,18 +261,16 @@ public class GameVisualizer extends JPanel {
     private void loadCharacterImage() {
         try {
             m_characterImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\rabbit1.png"));
-            }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
-    private BufferedImage loadImage(String path){
+
+    private BufferedImage loadImage(String path) {
         BufferedImage image = null;
         try {
             image = ImageIO.read(new File(path));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return image;
@@ -353,7 +353,6 @@ public class GameVisualizer extends JPanel {
 //        g.setColor(Color.BLACK);
 //        drawOval(g, x, y, 5, 5);
 //    }
-
 
 
     public double getM_robotPositionX() {
