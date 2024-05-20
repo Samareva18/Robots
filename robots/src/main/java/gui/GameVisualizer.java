@@ -141,17 +141,12 @@ public class GameVisualizer extends JPanel {
     int robotSize = 30;
     int halfRobotSize = robotSize / 2;
 
-    private BufferedImage m_characterImage;
+    private final BufferedImage m_characterImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\rabbit1.png");
     private BufferedImage backgroundImage;
     private int gameCount = 0;
 
 
-//    private Maze m_maze;
-
-
     public GameVisualizer() {
-//        m_maze = new Maze(700, 700);
-//        add(m_maze);
         m_timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -163,15 +158,7 @@ public class GameVisualizer extends JPanel {
             public void run() {
                 //onModelUpdateEvent();
             }
-        }, 0, 10);
-
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                //setTargetPosition(e.getPoint());
-                repaint();
-            }
-        });
+        }, 0, 50);
 
         addKeyListener(new KeyAdapter() {
             @Override
@@ -238,7 +225,6 @@ public class GameVisualizer extends JPanel {
 
     private void drawRobot(Graphics2D g, double direction) {
 
-        loadCharacterImage();
         int characterCenterX = round(m_robotPositionX);
         int characterCenterY = round(m_robotPositionY);
 
@@ -252,13 +238,6 @@ public class GameVisualizer extends JPanel {
         }
     }
 
-    private void loadCharacterImage() {
-        try {
-            m_characterImage = ImageIO.read(new File("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\rabbit1.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private BufferedImage loadImage(String path) {
         BufferedImage image = null;
