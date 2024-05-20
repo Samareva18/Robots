@@ -57,9 +57,9 @@ public class DrawMaze extends JPanel {
                 } else {
                     if (pathImage != null) {
                         g.drawImage(pathImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
+                        drawCarrot(g, carrotImage, i, j);
                     }
                 }
-                drawCarrot(g, carrotImage);
                 drawFinish(g);
             }
         }
@@ -71,21 +71,18 @@ public class DrawMaze extends JPanel {
     }
 
 
-    private void drawCarrot(Graphics g, BufferedImage carrotImage) {
+    private void drawCarrot(Graphics g, BufferedImage carrotImage, int i, int j) {
 
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[i].length; j++) {
-                if (!isPrizeCollected(cellWidth, cellHeight, j * cellWidth + 5, i * cellHeight + 5)) {
-                    if (maze[i][j] == 0 && (i % 7 == 0 || j % 5 == 0 || i % 4 == 0) && (i + j) % 3 == 0) {
-                        g.drawImage(carrotImage, j * cellWidth + 5, i * cellHeight + 5, 30, 30, this);
-                    }
-                } else {
-                    //maze[i][j] = -1; // приз собран
-                    //gameCount++;
-                    //drawGameCount(g);
-                }
+        if (!isPrizeCollected(cellWidth, cellHeight, j * cellWidth + 5, i * cellHeight + 5)) {
+            if (maze[i][j] == 0 && (i % 7 == 0 || j % 5 == 0 || i % 4 == 0) && (i + j) % 3 == 0) {
+                g.drawImage(carrotImage, j * cellWidth + 5, i * cellHeight + 5, 30, 30, this);
             }
+        } else {
+            maze[i][j] = -1; // приз собран
+            //gameCount++;
+            //drawGameCount(g);
         }
+
     }
 
     private boolean isPrizeCollected(int cellWidth, int cellHeight, int prizeX, int prizeY) {
