@@ -48,7 +48,7 @@ public class GameVisualizer extends JPanel {
     int robotSize = 30;
     int halfRobotSize = robotSize / 2;
 
-    private final BufferedImage m_characterImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\rabbit1.png");
+    private final BufferedImage m_characterImage = ImageLoader.loadImage("/rabbit1.png");
     private int gameCount = 0;
 
 

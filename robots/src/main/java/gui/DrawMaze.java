@@ -6,12 +6,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class DrawMaze extends JPanel {
 
     private volatile double m_robotPositionX;
     private volatile double m_robotPositionY;
-
 
     public static int[][] maze = {
             {1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1},
@@ -34,19 +34,22 @@ public class DrawMaze extends JPanel {
     int countOfCellsInHeight = maze.length;
     int cellWidth;
     int cellHeight;
+    int gameCount = 0;
 
-    public BufferedImage grassImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\grass.png");
-    public BufferedImage pathImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\img.png");
-    public BufferedImage carrotImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\carrot.png");
 
-    public DrawMaze(float windowHeight, float windowWidth, double posX, double posY){
+    public BufferedImage grassImage = ImageLoader.loadImage("/grass.png");
+    public BufferedImage pathImage = ImageLoader.loadImage("/img.png");
+    public BufferedImage carrotImage = ImageLoader.loadImage("/carrot.png");
+
+    public DrawMaze(float windowHeight, float windowWidth, double posX, double posY) {
         this.m_robotPositionX = posX;
         this.m_robotPositionY = posY;
         this.cellWidth = round(windowWidth / countOfCellsInWidth);
         this.cellHeight = round(windowHeight / countOfCellsInHeight);
+
     }
 
-    public void drawMaze(Graphics g){
+    public void drawMaze(Graphics g) {
 
         for (int i = 0; i < maze.length; i++) {
             for (int j = 0; j < maze[i].length; j++) {
@@ -79,11 +82,11 @@ public class DrawMaze extends JPanel {
             }
         } else {
             maze[i][j] = -1; // приз собран
-            //gameCount++;
-            //drawGameCount(g);
+            gameCount += 1;
+            drawGameCount(g);
         }
-
     }
+
 
     private boolean isPrizeCollected(int cellWidth, int cellHeight, int prizeX, int prizeY) {
         return m_robotPositionX >= prizeX && m_robotPositionX <= prizeX + cellWidth && m_robotPositionY >= prizeY
@@ -91,11 +94,11 @@ public class DrawMaze extends JPanel {
     }
 
 
-//    private void drawGameCount(Graphics g) {
-//        g.setColor(Color.BLACK);
-//        g.setFont(new Font("Arial", Font.PLAIN, 20));
-//        g.drawString("Счет: " + gameCount, 20, 25);
-//    }
+    private void drawGameCount(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.PLAIN, 20));
+        g.drawString("Счет: " + gameCount, 20, 25);
+    }
 
     private BufferedImage loadImage(String path) {
         BufferedImage image = null;
