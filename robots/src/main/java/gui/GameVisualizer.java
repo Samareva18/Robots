@@ -3,44 +3,22 @@ package main.java.gui;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import main.java.gui.MazeGenerator;
-import main.java.gui.Maze;
-
-import static main.java.gui.MazeGenerator.generateMaze;
-
 public class GameVisualizer extends JPanel {
 
-    private int[][] maze = {                          //TODO вынести в отдельный класс + функция для генерации лабиринта
-            {1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1},
-            {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0},
-            {1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1},
-            {0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1},
-            {1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1},
-            {0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1},
-            {1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1},
-            {1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1},
-            {0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0},
-            {1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1},
-            {1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1}
-    };
 
-    //private int[][] maze = generateMaze(14, 14);
+//    private Maze m;
+
+    private final int[][] maze = DrawMaze.maze;
 
 
     @Override
@@ -49,81 +27,10 @@ public class GameVisualizer extends JPanel {
 
         float windowHeight = getHeight();
         float windowWidth = getWidth();
-        int countOfCellsInWidth = maze[0].length;
-        int countOfCellsInHeight = maze.length;
-        int cellWidth = round(windowWidth / countOfCellsInWidth);
-        int cellHeight = round(windowHeight / countOfCellsInHeight);
 
-        BufferedImage grassImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\grass.png");
-        BufferedImage pathImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\img.png");
-        BufferedImage carrotImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\carrot.png");
+        DrawMaze m = new DrawMaze(windowHeight, windowWidth, m_robotPositionX, m_robotPositionY);
+        m.drawMaze(g);
 
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[i].length; j++) {
-                if (maze[i][j] == 1) {
-                    g.setColor(Color.PINK);
-                    g.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
-
-                    if (grassImage != null) {
-                        g.drawImage(grassImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
-                    }
-                } else {
-                    g.setColor(Color.YELLOW);
-                    g.fillRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
-
-                    if (pathImage != null) {
-                        g.drawImage(pathImage, j * cellWidth, i * cellHeight, cellWidth, cellHeight, this);
-                    }
-                }
-
-                drawCarrot(g, carrotImage);
-                drawFinish(g);
-
-            }
-        }
-    }
-
-
-
-    //TODO переделать
-    private void drawFinish(Graphics g) {
-        BufferedImage img = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\finish.png");
-        g.drawImage(img, 550, 460, 30, 30, this);
-    }
-
-
-    private void drawCarrot(Graphics g, BufferedImage carrotImage) {
-        float windowHeight = getHeight();
-        float windowWidth = getWidth();
-        int countOfCellsInWidth = maze[0].length;
-        int countOfCellsInHeight = maze.length;
-        int cellWidth = round(windowWidth / countOfCellsInWidth);
-        int cellHeight = round(windowHeight / countOfCellsInHeight);
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[i].length; j++) {
-                if (!isPrizeCollected(cellWidth, cellHeight, j * cellWidth + 5, i * cellHeight + 5)) {
-                    if (maze[i][j] == 0 && (i % 7 == 0 || j % 5 == 0 || i % 4 == 0) && (i + j) % 3 == 0) {
-                        g.drawImage(carrotImage, j * cellWidth + 5, i * cellHeight + 5, 30, 30, this);
-                    }
-                } else {
-                    maze[i][j] = -1; // приз собран
-                    //gameCount++;
-                    drawGameCount(g);
-                }
-            }
-        }
-    }
-
-    private boolean isPrizeCollected(int cellWidth, int cellHeight, int prizeX, int prizeY) {
-        return m_robotPositionX >= prizeX && m_robotPositionX <= prizeX + cellWidth && m_robotPositionY >= prizeY
-                && m_robotPositionY <= prizeY + cellHeight;
-    }
-
-
-    private void drawGameCount(Graphics g) {
-        g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.PLAIN, 20));
-        g.drawString("Счет: " + gameCount, 20, 25);
     }
 
 
@@ -134,15 +41,14 @@ public class GameVisualizer extends JPanel {
         return timer;
     }
 
-    private volatile double m_robotPositionX = 100;
-    private volatile double m_robotPositionY = 100;
+    private volatile double m_robotPositionX = 70;
+    private volatile double m_robotPositionY = 70;
     private volatile double m_robotDirection = 0;
 
     int robotSize = 30;
     int halfRobotSize = robotSize / 2;
 
     private final BufferedImage m_characterImage = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\rabbit1.png");
-    private BufferedImage backgroundImage;
     private int gameCount = 0;
 
 
@@ -185,17 +91,9 @@ public class GameVisualizer extends JPanel {
                 repaint();
             }
 
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-
         });
 
-        setDoubleBuffered(true); // для более плавного отображения графики
+        setDoubleBuffered(true);
         setFocusable(true);
     }
 
@@ -316,17 +214,6 @@ public class GameVisualizer extends JPanel {
         }
 
     }
-
-
-//    private void drawTarget(Graphics2D g, int x, int y) {
-//        AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
-//        g.setTransform(t);
-//        g.setColor(Color.GREEN);
-//        fillOval(g, x, y, 5, 5);
-//        g.setColor(Color.BLACK);
-//        drawOval(g, x, y, 5, 5);
-//    }
-
 
     public double getM_robotPositionX() {
         return m_robotPositionX;
