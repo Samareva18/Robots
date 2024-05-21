@@ -5,17 +5,11 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
+import javax.swing.*;
 
 
 import main.java.log.Logger;
@@ -24,8 +18,11 @@ import main.java.log.Logger;
 public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    LogWindow logWindow = createLogWindow();
-    GameWindow gameWindow = createGameWindow();
+//    LogWindow logWindow = createLogWindow();
+//    GameWindow gameWindow = createGameWindow();
+//
+    LogWindow logWindow;
+    GameWindow gameWindow;
 
     public MainApplicationFrame() {
 
@@ -37,6 +34,8 @@ public class MainApplicationFrame extends JFrame
 
         setContentPane(desktopPane);
 
+        createStateWindows();
+
         addWindow(logWindow);
         addWindow(gameWindow);
 
@@ -46,10 +45,37 @@ public class MainApplicationFrame extends JFrame
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+
+
                 closeMainWindow();
             }
         });
 
+    }
+
+    protected void createStateWindows(){
+        List<WindowState> stateList = WindowManager.loadWindowStates();
+        logWindow = createLogWindow();
+        gameWindow = createGameWindow();
+        if (stateList != null) {
+            for (WindowState state : stateList) {
+                int x = state.getX();
+                int y = state.getY();
+                int width = state.getWidth();
+                int height = state.getHeight();
+                String window = state.getWindowType();
+
+                if (Objects.equals(window, "log")) {
+                    logWindow.setLocation(x, y);
+                    logWindow.setSize(width, height);
+                }
+
+                if (Objects.equals(window, "game")) {
+                    gameWindow.setLocation(x, y);
+                    gameWindow.setSize(width, height);
+                }
+            }
+        }
     }
 
     protected LogWindow createLogWindow()
@@ -146,6 +172,26 @@ public class MainApplicationFrame extends JFrame
 
     public void closeMainWindow(){
         if (WindowCloseConfirmation.showConfirmation(getTitle())) {
+
+            int logWindowWidth = logWindow.getWidth();
+            int logWindowHeight = logWindow.getHeight();
+            int logWindowX = logWindow.getX();
+            int logWindowY = logWindow.getY();
+
+            int gameWindowWidth = gameWindow.getWidth();
+            int gameWindowHeight = gameWindow.getHeight();
+            int gameWindowX = gameWindow.getX();
+            int gameWindowY = gameWindow.getY();
+
+            WindowState logState = new WindowState(logWindowX, logWindowY, logWindowWidth, logWindowHeight, "log");
+            WindowState gameState = new WindowState(gameWindowX, gameWindowY, gameWindowWidth, gameWindowHeight, "game");
+
+            List<WindowState> stateList = new ArrayList<>();
+            stateList.add(gameState);
+            stateList.add(logState);
+
+            WindowManager.saveWindowStates(stateList);
+
             dispose();
         }
     }

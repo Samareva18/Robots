@@ -1,14 +1,10 @@
 package main.java.gui;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Objects;
 
-public class DrawMaze extends JPanel {
+public class MazeDrawer extends JPanel {
 
     private volatile double m_robotPositionX;
     private volatile double m_robotPositionY;
@@ -41,7 +37,7 @@ public class DrawMaze extends JPanel {
     public BufferedImage pathImage = ImageLoader.loadImage("/img.png");
     public BufferedImage carrotImage = ImageLoader.loadImage("/carrot.png");
 
-    public DrawMaze(float windowHeight, float windowWidth, double posX, double posY) {
+    public MazeDrawer(float windowHeight, float windowWidth, double posX, double posY) {
         this.m_robotPositionX = posX;
         this.m_robotPositionY = posY;
         this.cellWidth = round(windowWidth / countOfCellsInWidth);
@@ -69,7 +65,7 @@ public class DrawMaze extends JPanel {
     }
 
     private void drawFinish(Graphics g) {
-        BufferedImage img = loadImage("C:\\Users\\user\\git\\Robots\\OOPRobots\\robots\\src\\main\\java\\resources\\finish.png");
+        BufferedImage img = ImageLoader.loadImage("/finish.png");
         g.drawImage(img, 550, 460, 30, 30, this);
     }
 
@@ -100,15 +96,6 @@ public class DrawMaze extends JPanel {
         g.drawString("Счет: " + gameCount, 20, 25);
     }
 
-    private BufferedImage loadImage(String path) {
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(new File(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
 
     private static int round(double value) {
         return (int) (value + 0.5);

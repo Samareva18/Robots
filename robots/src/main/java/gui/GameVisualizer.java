@@ -5,54 +5,30 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
+
 
 public class GameVisualizer extends JPanel {
 
-
-//    private Maze m;
-
-    private final int[][] maze = DrawMaze.maze;
-
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        float windowHeight = getHeight();
-        float windowWidth = getWidth();
-
-        DrawMaze m = new DrawMaze(windowHeight, windowWidth, m_robotPositionX, m_robotPositionY);
-        m.drawMaze(g);
-
-    }
-
-
-    private final Timer m_timer = initTimer();
+    private final int[][] maze = MazeDrawer.maze;
 
     private static Timer initTimer() {
-        Timer timer = new Timer("events generator", true);
-        return timer;
+        return new Timer("events generator", true);
     }
 
     private volatile double m_robotPositionX = 70;
     private volatile double m_robotPositionY = 70;
     private volatile double m_robotDirection = 0;
-
     int robotSize = 30;
     int halfRobotSize = robotSize / 2;
-
     private final BufferedImage m_characterImage = ImageLoader.loadImage("/rabbit1.png");
     private int gameCount = 0;
 
 
     public GameVisualizer() {
+        Timer m_timer = initTimer();
         m_timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -97,6 +73,27 @@ public class GameVisualizer extends JPanel {
         setFocusable(true);
     }
 
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        float windowHeight = getHeight();
+        float windowWidth = getWidth();
+
+        MazeDrawer m = new MazeDrawer(windowHeight, windowWidth, m_robotPositionX, m_robotPositionY);
+        m.drawMaze(g);
+
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        Graphics2D g2d = (Graphics2D) g;
+        drawRobotInBounds(g2d, m_robotDirection);
+        drawRobotWithinPath(g2d, m_robotDirection);
+    }
+
     protected void onRedrawEvent() {
         EventQueue.invokeLater(this::repaint);
     }
@@ -110,14 +107,6 @@ public class GameVisualizer extends JPanel {
 
     private static int round(double value) {
         return (int) (value + 0.5);
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        Graphics2D g2d = (Graphics2D) g;
-        drawRobotInBounds(g2d, m_robotDirection);
-        drawRobotWithinPath(g2d, m_robotDirection);
     }
 
 
@@ -136,16 +125,6 @@ public class GameVisualizer extends JPanel {
         }
     }
 
-
-    private BufferedImage loadImage(String path) {
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(new File(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
 
     private void drawRobotInBounds(Graphics2D g, double direction) {
         int robotCenterX = round(m_robotPositionX);

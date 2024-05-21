@@ -19,13 +19,5 @@ public class ImageLoader {
         }
         return image;
     }
-
-//    public static void main(String[] args) {
-//        ImageLoader loader = new ImageLoader();
-//        BufferedImage img = loader.loadImage("/carrot.png");
-//        if (img != null) {
-//            System.out.println("Изображение успешно загружено!");
-//        }
-//    }
 }
 
