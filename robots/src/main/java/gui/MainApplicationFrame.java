@@ -54,25 +54,28 @@ public class MainApplicationFrame extends JFrame
     }
 
     protected void createStateWindows(){
-        List<WindowState> stateList = WindowManager.loadWindowStates();
+
         logWindow = createLogWindow();
         gameWindow = createGameWindow();
-        if (stateList != null) {
-            for (WindowState state : stateList) {
-                int x = state.getX();
-                int y = state.getY();
-                int width = state.getWidth();
-                int height = state.getHeight();
-                String window = state.getWindowType();
+        if (ResumptionWindow.showResumption(getTitle())) {
+            List<WindowState> stateList = WindowManager.loadWindowStates();
+            if (stateList != null) {
+                for (WindowState state : stateList) {
+                    int x = state.getX();
+                    int y = state.getY();
+                    int width = state.getWidth();
+                    int height = state.getHeight();
+                    String window = state.getWindowType();
 
-                if (Objects.equals(window, "log")) {
-                    logWindow.setLocation(x, y);
-                    logWindow.setSize(width, height);
-                }
+                    if (Objects.equals(window, "log")) {
+                        logWindow.setLocation(x, y);
+                        logWindow.setSize(width, height);
+                    }
 
-                if (Objects.equals(window, "game")) {
-                    gameWindow.setLocation(x, y);
-                    gameWindow.setSize(width, height);
+                    if (Objects.equals(window, "game")) {
+                        gameWindow.setLocation(x, y);
+                        gameWindow.setSize(width, height);
+                    }
                 }
             }
         }

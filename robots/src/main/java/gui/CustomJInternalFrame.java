@@ -13,7 +13,6 @@ public class CustomJInternalFrame extends JInternalFrame {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
                 if (WindowCloseConfirmation.showConfirmation(getTitle())) {
-                    //WindowManager.saveWindowState(getWindowState());
                     closeWindow();
                 }
             }
@@ -23,11 +22,6 @@ public class CustomJInternalFrame extends JInternalFrame {
     public void closeWindow() {
         dispose();
     }
-
-//    public WindowState getWindowState(){
-//        WindowState state = new WindowState(getX(), getY(), getWidth(), getHeight());
-//        return state;
-//    }
 
 
 }
