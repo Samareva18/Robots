@@ -79,7 +79,7 @@ public class MazeDrawer extends JPanel {
         } else {
             maze[i][j] = -1; // приз собран
             gameCount += 1;
-            drawGameCount(g);
+            //drawGameCount(g);
         }
     }
 

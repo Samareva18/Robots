@@ -13,15 +13,20 @@ public class WindowState implements Serializable {
 
     private String windowType;
 
+    private boolean isMaximum;
+    private boolean isIcon;
+
     public WindowState() {
     }
 
-    WindowState(int x, int y, int width, int height, String windowType){
+    WindowState(int x, int y, int width, int height, String windowType, boolean isMaximum, boolean isIcon){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.windowType = windowType;
+        this.isMaximum = isMaximum;
+        this.isIcon = isIcon;
     }
 
 //    private boolean isIcon;
@@ -61,6 +66,14 @@ public class WindowState implements Serializable {
     }
     public String getWindowType(){
         return windowType;
+    }
+
+    public boolean isIcon() {
+        return isIcon;
+    }
+
+    public boolean isMaximum() {
+        return isMaximum;
     }
 }
 

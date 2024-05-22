@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,7 +25,7 @@ public class MainApplicationFrame extends JFrame
     LogWindow logWindow;
     GameWindow gameWindow;
 
-    public MainApplicationFrame() {
+    public MainApplicationFrame() throws PropertyVetoException {
 
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -53,7 +54,7 @@ public class MainApplicationFrame extends JFrame
 
     }
 
-    protected void createStateWindows(){
+    protected void createStateWindows() throws PropertyVetoException {
 
         logWindow = createLogWindow();
         gameWindow = createGameWindow();
@@ -66,15 +67,21 @@ public class MainApplicationFrame extends JFrame
                     int width = state.getWidth();
                     int height = state.getHeight();
                     String window = state.getWindowType();
+                    boolean isMaximum = state.isMaximum();
+                    boolean isIcon = state.isIcon();
 
                     if (Objects.equals(window, "log")) {
                         logWindow.setLocation(x, y);
                         logWindow.setSize(width, height);
+                        logWindow.setMaximum(isMaximum);
+                        logWindow.setIcon(isIcon);
                     }
 
                     if (Objects.equals(window, "game")) {
                         gameWindow.setLocation(x, y);
                         gameWindow.setSize(width, height);
+                        gameWindow.setMaximum(isMaximum);
+                        gameWindow.setIcon(isIcon);
                     }
                 }
             }
@@ -180,14 +187,20 @@ public class MainApplicationFrame extends JFrame
             int logWindowHeight = logWindow.getHeight();
             int logWindowX = logWindow.getX();
             int logWindowY = logWindow.getY();
+            boolean logWindowIsMaximum = logWindow.isMaximum();
+            boolean logWindowIsIcon = logWindow.isIcon();
+
 
             int gameWindowWidth = gameWindow.getWidth();
             int gameWindowHeight = gameWindow.getHeight();
             int gameWindowX = gameWindow.getX();
             int gameWindowY = gameWindow.getY();
+            boolean gameWindowIsMaximum = gameWindow.isMaximum();
+            boolean gameWindowIsIcon = gameWindow.isIcon();
 
-            WindowState logState = new WindowState(logWindowX, logWindowY, logWindowWidth, logWindowHeight, "log");
-            WindowState gameState = new WindowState(gameWindowX, gameWindowY, gameWindowWidth, gameWindowHeight, "game");
+
+            WindowState logState = new WindowState(logWindowX, logWindowY, logWindowWidth, logWindowHeight, "log", logWindowIsMaximum, logWindowIsIcon);
+            WindowState gameState = new WindowState(gameWindowX, gameWindowY, gameWindowWidth, gameWindowHeight, "game", gameWindowIsMaximum, gameWindowIsIcon);
 
             List<WindowState> stateList = new ArrayList<>();
             stateList.add(gameState);

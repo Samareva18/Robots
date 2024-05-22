@@ -25,6 +25,8 @@ public class GameVisualizer extends JPanel {
     int halfRobotSize = robotSize / 2;
     private final BufferedImage m_characterImage = ImageLoader.loadImage("/rabbit1.png");
     private int gameCount = 0;
+    int windowHeight;
+    int windowWidth;
 
 
     public GameVisualizer() {
@@ -71,17 +73,19 @@ public class GameVisualizer extends JPanel {
 
         setDoubleBuffered(true);
         setFocusable(true);
+
     }
+
 
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        float windowHeight = getHeight();
-        float windowWidth = getWidth();
+        windowHeight = getHeight();
+        windowWidth = getWidth();
 
-        MazeDrawer m = new MazeDrawer(windowHeight, windowWidth, m_robotPositionX, m_robotPositionY);
+        MazeDrawer  m = new MazeDrawer(windowHeight, windowWidth, m_robotPositionX, m_robotPositionY);
         m.drawMaze(g);
 
     }
